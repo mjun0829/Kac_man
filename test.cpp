@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+#include <time.h>
 
 using namespace std;
 
@@ -26,8 +27,11 @@ public:
 };
 
 int main() {
-  test a(7);
+  test a(9);
+  time_t start = clock();
   a.find_path();
+  time_t end = clock();
+  cout << "time : " << (double)(end - start) / CLOCKS_PER_SEC << " sec " <<endl;
   a.display();
   return 0;
 }
@@ -86,6 +90,10 @@ void test::find_path(void) {
 
 void test::find_path(int now_x, int now_y, vector<vector<int>> footprint,
                      stack<int> way_x, stack<int> way_y) {
+  if (shortcut_x.size() < way_x.size()){
+      cout << "terminated" << endl;
+      return;
+  }
   footprint[now_y][now_x] = 1;
   way_x.push(now_x);
   way_y.push(now_y);
