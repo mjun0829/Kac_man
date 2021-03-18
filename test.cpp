@@ -8,6 +8,8 @@ class test {
 private:
   int size;
   vector<vector<int>> board;
+  stack<int> shortcut_x;
+  stack<int> shortcut_y;
 
 public:
   test();
@@ -20,13 +22,13 @@ public:
   */
   void find_path(void);
   void find_path(int now_x, int now_y, vector<vector<int>> footprint,
-                 stack<int> x, stack<int> y);
+                 stack<int> way_x, stack<int> way_y);
 };
 
 int main() {
-  test a(5);
-  a.display();
+  test a(7);
   a.find_path();
+  a.display();
   return 0;
 }
 
@@ -57,15 +59,21 @@ test::test(int n) {
   result_board[n - 2][n - 1] = 0;
   result_board[n - 1][n - 2] = 0;
   board = result_board;
+
+  for (int i = 0; i < size * size; i++) {
+    shortcut_x.push(0);
+    shortcut_y.push(0);
+  }
 }
 
 void test::display(void) const {
-  cout << "board" << endl;
-  for (auto i : board) {
-    for (auto j : i) {
-      cout << j << " ";
-    }
-    cout << endl;
+  stack<int> temp_x = shortcut_x;
+  stack<int> temp_y = shortcut_y;
+  cout << "size : " << shortcut_x.size() << endl;
+  while (temp_x.size() != 0) {
+    cout << "x : " << temp_x.top() << " y : " << temp_y.top() << endl;
+    temp_x.pop();
+    temp_y.pop();
   }
 }
 
@@ -83,10 +91,9 @@ void test::find_path(int now_x, int now_y, vector<vector<int>> footprint,
   way_y.push(now_y);
   if (now_x == size - 1 && now_y == size - 1) {
     cout << "finished : " << way_x.size() << endl;
-    while (way_x.size() != 0) {
-      cout << "x : " << way_x.top() << " y : " << way_y.top() << endl;
-      way_x.pop();
-      way_y.pop();
+    if (shortcut_x.size() > way_x.size()) {
+      shortcut_x = way_x;
+      shortcut_y = way_y;
     }
     return;
   }
