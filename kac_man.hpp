@@ -8,7 +8,7 @@
 namespace kac_man {
 
 //다음은 board의 원소 및 status에 들어갈 변수 목록이다.
-enum ObjectStatus { EMPTY, GHOST, KAC_DOT, PAC_MAN, WALL, KAC_MAN };
+enum ObjectStatus { EMPTY, GHOST, KAC_DOT, PAC_MAN, WALL, KAC_MAN, POW_DOT };
 
 // dir_x에 RIGHT,LEFT, dir_y에 UP,DOWN 만이 들어갈 수 있다.
 enum Direction { UP = -1, DOWN = 1, RIGHT = 1, LEFT = -1 };
@@ -104,10 +104,10 @@ public:
   // 생성한다.
   ObjectManager();
 
-  std::vector<std::vector<int>> const get_board(void) { return board; }
-  std::vector<Ghost> const get_ghosts(void) { return ghosts; }
-  std::vector<PowDot> const get_pow_dots(void) { return pow_dots; }
-  std::vector<KacDot> const get_kac_dots(void) { return kac_dots; }
+  std::vector<std::vector<int>> get_board(void) const { return board; }
+  std::vector<Ghost> get_ghosts(void) const { return ghosts; }
+  std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
+  std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
 
   void set_board(std::vector<std::vector<int>> new_board) { board = new_board; }
@@ -126,10 +126,18 @@ public:
     man_status에는 오직 kac_man.get_is_strong()이 들어간다.
   */
   void man_ghost_crush(bool man_status);
+
   /*
     kac_man - kac_dot이 닿았을 때 호출하는 함수
   */
   void man_kdot_crush(void);
+
+  //좌표 x,y에 있는 위치에 vector<dot> dots의 index 반환
+  // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
+  // status == POW_DOT 이면 vector<dot> pow_dots에서 찾음
+  // status가 이상한거 들어가면 일부로 에러가 나도록 -1 반환
+  int find_dot_num(int x, int y, int status) const;
+
   /*
      kac_man과 pow_dot이 닿았을 때 호출하는 함수
   */
