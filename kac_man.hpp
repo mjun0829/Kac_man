@@ -228,9 +228,30 @@ private:
   ObjectManager object_manager;
   int score;
   /*윈도우 포인터*/
+  WINDOW *main_scr;
+  WINDOW *game_scr;
+  WINDOW *game_score_scr;
+  WINDOW *option_map_view_scr;
+  WINDOW *option_map_select_scr;
 
 public:
   GameManager();
+  WINDOW *get_main_scr const {return main_scr;}
+  WINDOW *get_game_scr const {return game_scr;}
+  WINDOW *get_game_score_scr const {return game_scr;}
+  WINDOW *get_map_view_scr const {return option_map_view_scr;}
+  WINDOW *get_map_select_scr const {return option_map_select_scr;}
+  void init_ncurses();
+  void set_main_scr(WINDOW *ptr) {main_scr = ptr;}
+  void set_game_scr(WINDOW *ptr) {game_scr = ptr;}
+  void set_game_score_scr(WINDOW *ptr) {game_score_scr = ptr;}
+  void set_map_view_scr(WINDOW *ptr) {map_view_scr = ptr;}
+  void set_map_select_scr(WINDOW *ptr) {map_select_scr = ptr;}
+  WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
+  void print_game_init_objs();
+  void print_game_repeat_objs();
+  void load_map();
+  void keypad_manage();
   /*
   승리 여부를 검사하는 함수 - <algorithm> 의 std::all_of 를 이용할 것
   */

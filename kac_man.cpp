@@ -20,6 +20,7 @@ int wall_test_array[31][28] = {0,};
 int dir[4][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 int test_man_x = 2;
 int test_man_y = 2;
+int test_dir[2] = {0, 0};
 
 void GameManager::init_ncurses(){
 	initscr();
@@ -94,4 +95,27 @@ void GameManager::load_map(){
 	fd.close();
 }
 
+void GameManager::keypad_manage(){
+	int input = getch();
+	/*
+	switch(input){
+		case KEY_UP:
+			test_dir[0] = dir[0][0];
+			test_dir[1] = dir[0][1];
+			continue;
+		case KEY_RIGHT:
+			test_dir[0] = dir[1][0];
+			test_dir[1] = dir[1][1];
+			continue;
+		case KEY_DOWN:
+			test_dir[0] = dir[2][0];
+			test_dir[1] = dir[2][1];
+			continue;
+		case KEY_LEFT:
+			test_dir[0] = dir[3][0];
+			test_dir[1] = dir[3][1];
+			continue;
 
+	}
+	*/
+}
