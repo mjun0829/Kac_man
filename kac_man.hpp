@@ -91,41 +91,37 @@ kac_dot을 모아둔 kac_dots
 kac_man을 가지고 있다.
 
 */
-class ObjectManager {
+class ObjectManager : public Map {
 private:
-  std::vector<std::vector<int>> board;
-  std::vector<Ghost> ghosts;
-  std::vector<PowDot> pow_dots;
-  std::vector<KacDot> kac_dots;
-  KacMan kac_man;
+  Variables variables;
 
 public:
   // ObjectManger의 초기생성자로서, 모든 object를 map정보, variable정보를 토대로
   // 생성한다.
   ObjectManager();
+  Variables get_variables(void) const { return variables; }
 
-  std::vector<std::vector<int>> get_board(void) const { return board; }
-  std::vector<Ghost> get_ghosts(void) const { return ghosts; }
-  std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
-  std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
-  KacMan get_kac_man(void) const { return kac_man; }
-
-  void set_board(std::vector<std::vector<int>> new_board) { board = new_board; }
-  void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
-  void set_pow_dots(std::vector<PowDot> new_pow_dots) {
-    pow_dots = new_pow_dots;
-  }
-  void set_kac_dots(std::vector<KacDot> new_kac_dots) {
-    kac_dots = new_kac_dots;
-  }
-  void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
+  /*
+  유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
+  */
+  void set_map(Map new_map);
+  void set_variables(Variables new_variables) { variables = new_variables; }
 
   /*
     다음은 상호작용에 관한 함수들이다.
     kac_man - ghost가 닿았을 때 호출하는 함수
-    man_status에는 오직 kac_man.get_is_strong()이 들어간다.
+    is_man_strong에는 오직 kac_man.get_is_strong()이 들어간다.
   */
-  void man_ghost_crush(bool man_status);
+  void man_ghost_crush(bool is_man_strong);
+
+  //target_ghost의 현재 위치를 리스폰지역으로 보냄.
+  void ghost_respawn(Ghost target_ghost);
+
+  //(x,y)에 해당하는 ghost의 index를 반환함
+  int find_target_ghost();
+
+  //target_kac_man의 현재 위치를 리스폰지역으로 보냄.
+  void man_respawn(KacMan target_kac_man);
 
   /*
     kac_man - kac_dot이 닿았을 때 호출하는 함수
@@ -136,7 +132,7 @@ public:
   // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
   // status == POW_DOT 이면 vector<dot> pow_dots에서 찾음
   // status가 이상한거 들어가면 일부로 에러가 나도록 -1 반환
-  int find_dot_num(int x, int y, int status) const;
+  int find_target_dot_num(int x, int y, int status) const;
 
   /*
      kac_man과 pow_dot이 닿았을 때 호출하는 함수
@@ -242,15 +238,44 @@ public:
   /*게임을 종료하는 함수*/
 };
 
+/*
+맵 정보를 담고 있는 클래스
+ObjectManager의 private 변수들의 초기값들을 저장하고있음.
+추후 맵에디터를 제작할 때 반환값으로 쓰일 클래스
+*/
 class Map {
 private:
   std::vector<std::vector<int>> board;
-  int ghost_num;
-  int pow_num;
-  int kac_num;
+  std::vector<Ghost> ghosts;
+  std::vector<PowDot> pow_dots;
+  std::vector<KacDot> kac_dots;
+  KacMan kac_man;
+  std::vector<Object> man_respawn_spots;
+  std::vector<Object> ghost_respawn_spots;
 
 public:
+  Map();
   std::vector<std::vector<int>> get_board(void) const { return board; }
+  std::vector<Ghost> get_ghosts(void) const { return ghosts; }
+  std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
+  std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
+  KacMan get_kac_man(void) const { return kac_man; }
+  std::vector<Object> get_man_respawn_spots() const {
+    return man_respawn_spots;
+  }
+  std::vector<Object> get_ghost_respawn_spots() const {
+    return ghost_respawn_spots;
+  }
+
+  void set_board(std::vector<std::vector<int>> new_board) { board = new_board; }
+  void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
+  void set_pow_dots(std::vector<PowDot> new_pow_dots) {
+    pow_dots = new_pow_dots;
+  }
+  void set_kac_dots(std::vector<KacDot> new_kac_dots) {
+    kac_dots = new_kac_dots;
+  }
+  void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
 };
 
 }; // namespace kac_man
