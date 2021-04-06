@@ -7,22 +7,22 @@ using namespace std;
 
 class board {
 private:
-	int status;//»óÅÂ°ª 0: ºó°ø°£, 1:º®, 2:kac_man,3:ghost 4°¡Áö »óÅÂ Á¤ÀÇÇÔ
-	int root_num;//kac_man¿¡¼­ ½ÃÀÛÇØ¼­ ÇöÀç Ä­±îÁöÀÇ ÃÖ´Ü°Å¸® ÀúÀå. ÃÊ±â °ªÀº 10000.
-	vector<char> root;//kac_man¿¡¼­ ½ÃÀÛÇØ¼­ ÇöÀçÄ­ ±îÁöÀÇ ÃÖ´Ü°Å¸® °¡´Â ¹æ¹ý R, L, U, D ·Î ÀúÀå
+	int status;//ï¿½ï¿½ï¿½Â°ï¿½ 0: ï¿½ï¿½ï¿½ï¿½ï¿½, 1:ï¿½ï¿½, 2:kac_man,3:ghost 4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	int root_num;//kac_manï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ 10000.
+	vector<char> root;//kac_manï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ä­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ R, L, U, D ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	
 public:
 	int x;
-	int y;// ÇöÀç º¸µåÀÇ x°ª y °ª ÀúÀå
+	int y;// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ xï¿½ï¿½ y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	board();
 	board(int r_status);
-	board(int r_status, int x, int y);//ÇöÀç »óÅÂ¿Í x, y °ª ÀúÀå ÃÊ±âÈ­
+	board(int r_status, int x, int y);//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ x, y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	int get_status();
 	int get_root_num();
 	vector<char> get_root();
 	int set_root_num(int n);
 	board& operator=(const board &ref);
-	bool compare_root_num(int n);//¾Ë°í¸®Áò¿¡¼­ »ç¿ëµÇ´Â ÇÔ¼ö. ºñ±³°ª(ÇöÀçÀÇ n)À» ÀÔ·Â ¹Þ¾Æ ÀÚ½Åº¸´Ù Å¬ °æ¿ì true ¸®ÅÏ.
+	bool compare_root_num(int n);//ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ò¿¡¼ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½Ô¼ï¿½. ï¿½ñ±³°ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ n)ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Þ¾ï¿½ ï¿½Ú½Åºï¿½ï¿½ï¿½ Å¬ ï¿½ï¿½ï¿½ true ï¿½ï¿½ï¿½ï¿½.
 	void push_root_R(vector<char> ref);
 	void push_root_L(vector<char> ref);
 	void push_root_U(vector<char> ref);
@@ -32,21 +32,21 @@ public:
 
 class kalgorism {
 private:
-	vector<vector<board>> board_;//º¸µåÅ¬·¡½º¸¦ ÀúÀåÇÏ´Â 2Â÷¿ø ¹è¿­
+	vector<vector<board>> board_;//ï¿½ï¿½ï¿½ï¿½Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ 2ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
 public:
 	kalgorism();
-	kalgorism(int n);// n X nÅ©±âÀÇ ÆÇÀ» ¸¸µç´Ù.
-	int set_board(int r_x, int r_y, int r_status);// (r_x, r_y)ÀÇ º¸µå¸¦ »óÅÂ°ª¿¡ ¸Â°Ô º¯°æÇÑ´Ù.
-	int trace(int x, int y);// ¸ÞÀÎ ¾Ë°í¸®Áò ¼³¸íÀº ÃßÈÄ¿¡
-	void print_root_num(int x, int y);//ÃÖ´Ü°Å¸® °ª Ãâ·Â
-	void print_root(int x, int y);//ÃÖ´Ü°Å¸® °æ·Î Ãâ·Â
-	void print_(int x);//º¸µå¸¦ ½Ã°¢ÀûÀ¸·Î Ç¥ÇöÇÏ´Â ÇÔ¼ö
+	kalgorism(int n);// n X nÅ©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+	int set_board(int r_x, int r_y, int r_status);// (r_x, r_y)ï¿½ï¿½ ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+	int trace(int x, int y);// ï¿½ï¿½ï¿½ï¿½ ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½
+	void print_root_num(int x, int y);//ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
+	void print_root(int x, int y);//ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	void print_(int x);//ï¿½ï¿½ï¿½å¸¦ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 };
 
 int main() {
-	kalgorism test(50);//50Ä­ Â¥¸® º¸µå ¸¸µë
+	kalgorism test(50);//50Ä­ Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	time_t start, finish;
-	double result;//½Ã°£ Àê°Íµé
+	double result;//ï¿½Ã°ï¿½ ï¿½ï¿½Íµï¿½
 
 	for (int n = 0; n < 50; n++)
 		for (int m = 0; m < 50; m++)
@@ -59,20 +59,20 @@ int main() {
 		test.set_board(1,n, 0);
 	for (int n = 0; n < 50; n++)
 		test.set_board(1,n, 49);
-	// ÁÖÀ§¿¡ Å×µÎ¸® º®À¸·Î »óÅÂº¯È¯
-	test.set_board(2, 3, 3);//(3,3)À» »óÅÂ 2 :kac_manÀ¸·Î º¯È¯
-	test.set_board(3, 40, 42);//(40,42)¸¦ »óÅÂ 3:ghost·Î º¯È¯
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×µÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Âºï¿½È¯
+	test.set_board(2, 3, 3);//(3,3)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2 :kac_manï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	test.set_board(3, 40, 42);//(40,42)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3:ghostï¿½ï¿½ ï¿½ï¿½È¯
 
-	test.print_(50);//50Ä­ Â¥¸® º¸µå °¡½ÃÈ­
+	test.print_(50);//50Ä­ Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 
 	start = time(NULL);
-	test.trace(3, 3);//(3,3)±âÁØÀ¸·Î ¸ðµç Ä­ ÃÖ´Ü°Å¸® ÃßÀû ½ÃÀÛ
+	test.trace(3, 3);//(3,3)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ä­ ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	finish = time(NULL);
 
-	test.print_root_num(40, 42);//(40,42)ÀÇ ÃÖ´Ü°Å¸® Ãâ·Â
-	test.print_root(40, 42);//(40,42)ÀÇ ÃÖ´Ü°Å¸® °æ·Î Ãâ·Â
+	test.print_root_num(40, 42);//(40,42)ï¿½ï¿½ ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½
+	test.print_root(40, 42);//(40,42)ï¿½ï¿½ ï¿½Ö´Ü°Å¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	result = (double)(finish - start);
-	cout << endl<<"½Ã°£ ÃøÁ¤ : " << result << "ÃÊ"<<endl;
+	cout << endl<<"ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ : " << result << "ï¿½ï¿½"<<endl;
 	return 0;
 }
 
@@ -307,13 +307,13 @@ void kalgorism::print_(int x) {
 		for (int j = 0; j < x; j++)
 		{
 			if (board_[i][j].get_status() == 0)
-				cout << "¡Û";
+				cout << "ï¿½ï¿½";
 			else if (board_[i][j].get_status() == 1)
-				cout << "¡Ü";
+				cout << "ï¿½ï¿½";
 			else if (board_[i][j].get_status() == 2)
-				cout << "¡Ù";
+				cout << "ï¿½ï¿½";
 			else if (board_[i][j].get_status() == 3)
-				cout << "¡Ú";
+				cout << "ï¿½ï¿½";
 			else
 				return;
 		}
