@@ -11,6 +11,7 @@ namespace ims {
 	
 	/*
 	클래스 space
+	(x,y)좌표의 status값을 가지고 있다.
 	board 클래스와 비슷하나 root_num(최단거리)과 root(최단 루트) 변수 추가.
 	*/
 	class space {
