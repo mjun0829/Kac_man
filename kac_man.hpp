@@ -8,7 +8,7 @@
 namespace kac_man {
 
 //다음은 board의 원소 및 status에 들어갈 변수 목록이다.
-enum ObjectStatus { EMPTY, GHOST, KAC_DOT, PAC_MAN, WALL, KAC_MAN, POW_DOT };
+enum ObjectStatus { EMPTY, WALL, KAC_MAN, GHOST, KAC_DOT, POW_DOT };
 
 // dir_x에 RIGHT,LEFT, dir_y에 UP,DOWN 만이 들어갈 수 있다.
 enum Direction { UP = -1, DOWN = 1, RIGHT = 1, LEFT = -1 };
@@ -266,21 +266,25 @@ ObjectManager의 private 변수들의 초기값들을 저장하고있음.
 */
 class Map {
 private:
-  std::vector<std::vector<int>> board;
+  std::vector<std::vector<ObjectStatus>> board;
   std::vector<Ghost> ghosts;
   std::vector<PowDot> pow_dots;
   std::vector<KacDot> kac_dots;
   KacMan kac_man;
   std::vector<Object> man_respawn_spots;
   std::vector<Object> ghost_respawn_spots;
+  int x;
+  int y;
 
 public:
   Map();
-  std::vector<std::vector<int>> get_board(void) const { return board; }
+  std::vector<std::vector<ObjectStatus>> get_board(void) const { return board; }
   std::vector<Ghost> get_ghosts(void) const { return ghosts; }
   std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
   std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
+  int get_x(void){ return x ;}
+  int get_y(void){return y;}
   std::vector<Object> get_man_respawn_spots() const {
     return man_respawn_spots;
   }
@@ -288,7 +292,7 @@ public:
     return ghost_respawn_spots;
   }
 
-  void set_board(std::vector<std::vector<int>> new_board) { board = new_board; }
+  void set_board(std::vector<std::vector<ObjectStatus>> new_board) { board = new_board; }
   void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
   void set_pow_dots(std::vector<PowDot> new_pow_dots) {
     pow_dots = new_pow_dots;
@@ -297,6 +301,8 @@ public:
     kac_dots = new_kac_dots;
   }
   void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
+  void set_x(int new_x){ x=new_x;}
+  void set_y(int new_y){ y=new_y;}
 };
 
 }; // namespace kac_man

@@ -2,8 +2,10 @@
 #define __SHORTEST_ROOT__
 
 #include <iostream>
+#include <ncurses.h>
 #include <vector>
 #include <queue>
+#include "kac_man.hpp"
 
 namespace ims {
 	class space {
@@ -38,8 +40,8 @@ namespace ims {
 	private:
 		std::vector<std::vector<space>> board;
 	public:
-		shortest_root();
-		void trace();
+		shortest_root(kac_man::Map map );
+		void trace(kac_man::Map map);
 	};
 	
 	space::space() {
