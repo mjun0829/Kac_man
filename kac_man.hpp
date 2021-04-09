@@ -263,6 +263,7 @@ public:
 맵 정보를 담고 있는 클래스
 ObjectManager의 private 변수들의 초기값들을 저장하고있음.
 추후 맵에디터를 제작할 때 반환값으로 쓰일 클래스
+ 맵 크기는 x,y이용해서 표현 x->가로 y ->세로
 */
 class Map {
 private:
