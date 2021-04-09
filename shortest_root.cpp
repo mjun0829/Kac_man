@@ -2,7 +2,47 @@
 #include "shortest_root.hpp"
 #include "kac_man.hpp"
 
-namespace ims{
+using namespace ims;
+
+    space::space() {
+		int x = 0;
+		int y = 0;
+		int status = 0;
+		int root_num = 0;
+	}
+
+	space::space(int new_x, int new_y, int new_status) {
+		x = new_x;
+		y = new_y;
+		status = new_status;
+		if (new_status == kac_man::EMPTY)//0
+			root_num = INFINITE;
+		else if (new_status == kac_man::WALL)//1
+			root_num = -1;
+		else if (new_status == kac_man::KAC_MAN)//2
+			root_num = 0;
+		else if (new_status == kac_man::GHOST)//3
+			root_num = INFINITE;
+		else
+			root_num = INFINITE;
+	}
+
+	void space::set_space(int new_x, int new_y, int new_status) {
+		x = new_x;
+		y = new_y;
+		status = new_status;
+		if (new_status == kac_man::EMPTY)//0
+			root_num = INFINITE;
+		else if (new_status == kac_man::WALL)//1
+			root_num = -1;
+		else if (new_status == kac_man::KAC_MAN)//2
+			root_num = 0;
+		else if (new_status == kac_man::GHOST)//3
+			root_num = INFINITE;
+		else
+			root_num = INFINITE;
+	}
+
     shortest_root::shortest_root(kac_man::Map map){
         std::vector<std::vector<kac_man::ObjectStatus>> temp_board=map.get_board();
         for(int i=0;i<map.get_x();i++){
@@ -69,4 +109,3 @@ namespace ims{
 
 
     }
-}//end of namespace ims
