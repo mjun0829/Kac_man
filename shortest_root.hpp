@@ -7,7 +7,7 @@
 #include <queue>
 #include "kac_man.hpp"
 
-namespace ims {
+namespace shortest {
 	
 	/*
 	클래스 space

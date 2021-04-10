@@ -2,7 +2,7 @@
 #include "shortest_root.hpp"
 #include "kac_man.hpp"
 
-using namespace ims;
+using namespace shortest;
 
     space::space() {
 		int x = 0;
