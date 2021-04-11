@@ -17,23 +17,23 @@ void ObjectManager::set_map(Map new_map) {
 
 void ObjectManager::man_ghost_crush(bool is_man_strong) {
   if (is_man_strong) {
-      std::vector<Ghost> temp_ghost = get_ghosts();
-      ghost_respawn(temp_ghost[find_target_ghost()]);
-      /*
-      score 증가
-      */
+    std::vector<Ghost> temp_ghost = get_ghosts();
+    ghost_respawn(temp_ghost[find_target_ghost()]);
+    /*
+    score 증가
+    */
   } else {
-      KacMan temp_kac_man = get_kac_man();
-      man_respawn(temp_kac_man);
-      temp_kac_man.decrease_life();
-      set_kac_man(temp_kac_man);
+    KacMan temp_kac_man = get_kac_man();
+    man_respawn(temp_kac_man);
+    temp_kac_man.decrease_life();
+    set_kac_man(temp_kac_man);
   }
-
 }
 
 void ObjectManager::man_kdot_crush(void) {
   KacMan temp_kac_man = get_kac_man();
-  int target_dot_num = find_target_dot_num(temp_kac_man.get_x(), temp_kac_man.get_y(), KAC_DOT);
+  int target_dot_num =
+      find_target_dot_num(temp_kac_man.get_x(), temp_kac_man.get_y(), KAC_DOT);
   std::vector<KacDot> result_dots = get_kac_dots();
   result_dots[target_dot_num].set_is_empty(true);
   set_kac_dots(result_dots);
@@ -62,4 +62,20 @@ int ObjectManager::find_target_dot_num(int x, int y, int status) const {
   }
 }
 
-void ObjectManager::man_pdot_crush(void) {}
+void ObjectManager::man_pdot_crush(void) {
+  KacMan temp_kac_man = get_kac_man();
+  temp_kac_man.set_is_strong(true);
+  int target_dot_num =
+      find_target_dot_num(temp_kac_man.get_x(), temp_kac_man.get_y(), POW_DOT);
+  std::vector<PowDot> result_dots = get_pow_dots();
+  result_dots[target_dot_num].set_is_empty(true);
+  std::vector<Ghost> temp_ghosts = get_ghosts();
+  for (auto one_ghost : temp_ghosts) {
+    one_ghost.set_status(true);
+  }
+  set_pow_dots(result_dots);
+  set_kac_man(temp_kac_man);
+  set_ghosts(temp_ghosts);
+  /*ghost가 man으로부터 멀어지는 알고리즘 호출*/
+  /*일정 시간이 지난 후 kacman, ghost의 상태 Default로 수정되어야함*/
+}
