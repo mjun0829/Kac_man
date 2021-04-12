@@ -8,7 +8,7 @@
 namespace kac_man {
 
 //다음은 board의 원소 및 status에 들어갈 변수 목록이다.
-enum ObjectStatus { EMPTY, GHOST, KAC_DOT, PAC_MAN, WALL, KAC_MAN, POW_DOT };
+enum ObjectStatus { EMPTY, WALL, KAC_MAN, GHOST, KAC_DOT, POW_DOT };
 
 // dir_x에 RIGHT,LEFT, dir_y에 UP,DOWN 만이 들어갈 수 있다.
 enum Direction { UP = -1, DOWN = 1, RIGHT = 1, LEFT = -1 };
@@ -114,13 +114,13 @@ public:
   */
   void man_ghost_crush(bool is_man_strong);
 
-  //target_ghost의 현재 위치를 리스폰지역으로 보냄.
+  // target_ghost의 현재 위치를 리스폰지역으로 보냄.
   void ghost_respawn(Ghost target_ghost);
 
   //(x,y)에 해당하는 ghost의 index를 반환함
   int find_target_ghost();
 
-  //target_kac_man의 현재 위치를 리스폰지역으로 보냄.
+  // target_kac_man의 현재 위치를 리스폰지역으로 보냄.
   void man_respawn(KacMan target_kac_man);
 
   /*
@@ -227,27 +227,30 @@ private:
   WINDOW *main_scr;
   WINDOW *game_scr;
   WINDOW *game_score_scr;
-  WINDOW *option_map_view_scr;
-  WINDOW *option_map_select_scr;
+  WINDOW *map_view_scr;
+  WINDOW *map_select_scr;
 
 public:
   GameManager();
   WINDOW *get_main_scr const {return main_scr;}
   WINDOW *get_game_scr const {return game_scr;}
   WINDOW *get_game_score_scr const {return game_scr;}
-  WINDOW *get_map_view_scr const {return option_map_view_scr;}
-  WINDOW *get_map_select_scr const {return option_map_select_scr;}
+  WINDOW *get_map_view_scr const {return map_view_scr;}
+  WINDOW *get_map_select_scr const {return map_select_scr;}
   void init_ncurses();
-  void set_main_scr(WINDOW *ptr) {main_scr = ptr;}
-  void set_game_scr(WINDOW *ptr) {game_scr = ptr;}
-  void set_game_score_scr(WINDOW *ptr) {game_score_scr = ptr;}
-  void set_map_view_scr(WINDOW *ptr) {map_view_scr = ptr;}
-  void set_map_select_scr(WINDOW *ptr) {map_select_scr = ptr;}
+  void set_main_scr(WINDOW *ptr) { main_scr = ptr; }
+  void set_game_scr(WINDOW *ptr) { game_scr = ptr; }
+  void set_game_score_scr(WINDOW *ptr) { game_score_scr = ptr; }
+  void set_map_view_scr(WINDOW *ptr) { option_map_view_scr = ptr; }
+  void set_map_select_scr(WINDOW *ptr) { option_map_select_scr = ptr; }
   WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
   void print_game_init_objs();
   void print_game_repeat_objs();
   void load_map();
-  void keypad_manage();
+  void game_keypad_manage();
+  void frame_timer();
+  void print_main_scr();
+  void print_game_scr():
   /*
   승리 여부를 검사하는 함수 - <algorithm> 의 std::all_of 를 이용할 것
   */
@@ -263,24 +266,29 @@ public:
 맵 정보를 담고 있는 클래스
 ObjectManager의 private 변수들의 초기값들을 저장하고있음.
 추후 맵에디터를 제작할 때 반환값으로 쓰일 클래스
+ 맵 크기는 x,y이용해서 표현 x->행 개수 y ->열 개수
 */
 class Map {
 private:
-  std::vector<std::vector<int>> board;
+  std::vector<std::vector<ObjectStatus>> board;
   std::vector<Ghost> ghosts;
   std::vector<PowDot> pow_dots;
   std::vector<KacDot> kac_dots;
   KacMan kac_man;
   std::vector<Object> man_respawn_spots;
   std::vector<Object> ghost_respawn_spots;
+  int x;
+  int y;
 
 public:
   Map();
-  std::vector<std::vector<int>> get_board(void) const { return board; }
+  std::vector<std::vector<ObjectStatus>> get_board(void) const { return board; }
   std::vector<Ghost> get_ghosts(void) const { return ghosts; }
   std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
   std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
+  int get_x(void) { return x; }
+  int get_y(void) { return y; }
   std::vector<Object> get_man_respawn_spots() const {
     return man_respawn_spots;
   }
@@ -288,7 +296,9 @@ public:
     return ghost_respawn_spots;
   }
 
-  void set_board(std::vector<std::vector<int>> new_board) { board = new_board; }
+  void set_board(std::vector<std::vector<ObjectStatus>> new_board) {
+    board = new_board;
+  }
   void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
   void set_pow_dots(std::vector<PowDot> new_pow_dots) {
     pow_dots = new_pow_dots;
@@ -297,6 +307,8 @@ public:
     kac_dots = new_kac_dots;
   }
   void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
+  void set_x(int new_x) { x = new_x; }
+  void set_y(int new_y) { y = new_y; }
 };
 
 }; // namespace kac_man

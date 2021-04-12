@@ -15,12 +15,6 @@ using namespace kac_man;
 #define map_view_max_x 30
 #define map_select_max_x 12
 
-//임시 변수들 
-int wall_test_array[31][28] = {0,};
-int dir[4][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-int test_man_x = 2;
-int test_man_y = 2;
-int test_dir[2] = {0, 0};
 
 void GameManager::init_ncurses(){
 	initscr();
@@ -39,40 +33,39 @@ WINDOW *GameManager::make_scr(int max_y, int max_x, int start_y, int start_x){
 }
 
 void GameManager::print_game_init_objs(){
+	Map temp_board = get_board();
 	wborder(get_game_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
 	wborder(get_game_score_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
-	for(int y = 0; y < 31; y++){
-		for(int x = 0; x < 28; x++){
-			if(wall_test_array[y][x] == WALL){
+	for(int y = 0; y < temp_board.size(); y++){
+		for(int x = 0; x < temp_board[0].size; x++){
+			if(temp_board[y][x] == WALL){
 				mvwprintw(get_game_scr(), y + 1, x + 1, "W");
 			}
-			/*
-			if( == POW_DOT){
-				mvwprintw(get_game_scr(), y + 1, x + 1, "");
+			else if(temp_board[y][x] == POW_DOT){
+				mvwprintw(get_game_scr(), y + 1, x + 1, "P");
 			}
-			if( == KAC_DOT){
-				mvwprintw(get_game_scr(), y + 1, x + 1, "");
+			else if(temp_board[y][x] == KAC_DOT){
+				mvwprintw(get_game_scr(), y + 1, x + 1, "+");
 			}
-			*/
+			else{
+				mvwprintw(get_game_scr(), y + 1, x + 1, " ");
+			}
 		}
 	}
-	mvwprintw(get_game_scr(), test_man_y, test_man_x, "K");
 	wrefresh(get_game_scr());
 	wrefresh(get_game_score_scr());
 }
 
 void GameManager::print_game_repeat_objs(){
-	/*
 	KacMan temp_man = get_kac_man();
 	Ghost temp_ghost = get_ghost();
-	mvwprintw(get_game_scr(), temp_man.get_y, temp_man.get_x, "");
-	mvwprintw(get_game_scr(), temp_ghost.get_y, temp_ghost.get_x, "");
+	mvwprintw(get_game_scr(), temp_man.get_y, temp_man.get_x, "K");
+	mvwprintw(get_game_scr(), temp_ghost.get_y, temp_ghost.get_x, "G");
 	wrefresh(get_game_scr());
 	mvwprintw(get_game_scr(), temp_man.get_y, temp_man.get_x, " ");
         mvwprintw(get_game_scr(), temp_ghost.get_y, temp_ghost.get_x, " ");
-	*/
 }
-
+/*
 void GameManager::load_map(){
 	std::ifstream fd;
 	fd.open("map_test.txt");
@@ -94,28 +87,61 @@ void GameManager::load_map(){
 	}
 	fd.close();
 }
-
-void GameManager::keypad_manage(){
+*/
+void GameManager::game_keypad_manage(){
+	Kac_man temp_man = get_kac_man();
 	int input = getch();
-	/*
 	switch(input){
 		case KEY_UP:
-			test_dir[0] = dir[0][0];
-			test_dir[1] = dir[0][1];
+			temp_man.set_dir_x(UP);
+			temp_man.set_dir_y(0);
 			continue;
 		case KEY_RIGHT:
-			test_dir[0] = dir[1][0];
-			test_dir[1] = dir[1][1];
+			temp_man.set_dir_x(0);
+                        temp_man.set_dir_y(RIGHT);
 			continue;
 		case KEY_DOWN:
-			test_dir[0] = dir[2][0];
-			test_dir[1] = dir[2][1];
+			temp_man.set_dir_x(DOWN);
+                        temp_man.set_dir_y(0);
 			continue;
 		case KEY_LEFT:
-			test_dir[0] = dir[3][0];
-			test_dir[1] = dir[3][1];
+			temp_man.set_dir_x(0);
+			temp_man.set_dir_y(LEFT);
 			continue;
 
 	}
-	*/
+}
+
+void frame_timer(){
+	time_t start, now;
+	start = clock();
+	while(1){
+		now = clock();
+		if((double)(now - start) / (double)(CLOCKS_PER_SEC) >= 0.0166){
+			break;
+		}
+	}
+}
+
+void GameManager::print_main_scr(){
+	wborder(get_main_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
+	mvwprintw(get_main_scr(), 10, 17, "KAC--MAN");
+	mvwprintw(get_main_scr(), 16, 16, "GAME START");
+	mvwprintw(get_main_scr(), 20, 16, "FIX OPTION");
+	mvwprintw(get_main_scr(), 24, 16, "LOAD  MAPS");
+	mvwprintw(get_main_scr(), 27, 8, "PRESS 'spacebar' to select");
+	int input = getch();
+	switch(input){
+		case ' ':
+			clear();
+			print_game_scr();
+	}
+}
+
+void GameManager::print_game_scr(){
+	print_game_init_objs();
+	while(1){
+		print_game_repeat_objs();
+		frame_timer();
+	}
 }
