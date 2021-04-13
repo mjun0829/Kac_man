@@ -62,7 +62,7 @@ using namespace shortest;
         std::queue<space> board_q;
 	    space temp;
 	    space ref;
-d
+
 	    board_q.push(board[x][y]);
 	    for (int n = 0; board_q.size() > 0; n++) {
 	    	while (1) {
