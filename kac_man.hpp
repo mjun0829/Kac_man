@@ -114,13 +114,13 @@ public:
   */
   void man_ghost_crush(bool is_man_strong);
 
-  //target_ghost의 현재 위치를 리스폰지역으로 보냄.
+  // target_ghost의 현재 위치를 리스폰지역으로 보냄.
   void ghost_respawn(Ghost target_ghost);
 
   //(x,y)에 해당하는 ghost의 index를 반환함
   int find_target_ghost();
 
-  //target_kac_man의 현재 위치를 리스폰지역으로 보냄.
+  // target_kac_man의 현재 위치를 리스폰지역으로 보냄.
   void man_respawn(KacMan target_kac_man);
 
   /*
@@ -232,17 +232,17 @@ private:
 
 public:
   GameManager();
-  WINDOW *get_main_scr() const {return main_scr;}
-  WINDOW *get_game_scr() const {return game_scr;}
-  WINDOW *get_game_score_scr() const {return game_scr;}
-  WINDOW *get_map_view_scr() const {return option_map_view_scr;}
-  WINDOW *get_map_select_scr() const {return option_map_select_scr;}
+  WINDOW *get_main_scr() const { return main_scr; }
+  WINDOW *get_game_scr() const { return game_scr; }
+  WINDOW *get_game_score_scr() const { return game_scr; }
+  WINDOW *get_map_view_scr() const { return option_map_view_scr; }
+  WINDOW *get_map_select_scr() const { return option_map_select_scr; }
   void init_ncurses();
-  void set_main_scr(WINDOW *ptr) {main_scr = ptr;}
-  void set_game_scr(WINDOW *ptr) {game_scr = ptr;}
-  void set_game_score_scr(WINDOW *ptr) {game_score_scr = ptr;}
-  void set_map_view_scr(WINDOW *ptr) {option_map_view_scr = ptr;}
-  void set_map_select_scr(WINDOW *ptr) {option_map_select_scr = ptr;}
+  void set_main_scr(WINDOW *ptr) { main_scr = ptr; }
+  void set_game_scr(WINDOW *ptr) { game_scr = ptr; }
+  void set_game_score_scr(WINDOW *ptr) { game_score_scr = ptr; }
+  void set_map_view_scr(WINDOW *ptr) { option_map_view_scr = ptr; }
+  void set_map_select_scr(WINDOW *ptr) { option_map_select_scr = ptr; }
   WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
   void print_game_init_objs();
   void print_game_repeat_objs();
@@ -284,8 +284,8 @@ public:
   std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
   std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
-  int get_x(void){ return x ;}
-  int get_y(void){return y;}
+  int get_x(void) { return x; }
+  int get_y(void) { return y; }
   std::vector<Object> get_man_respawn_spots() const {
     return man_respawn_spots;
   }
@@ -293,7 +293,9 @@ public:
     return ghost_respawn_spots;
   }
 
-  void set_board(std::vector<std::vector<ObjectStatus>> new_board) { board = new_board; }
+  void set_board(std::vector<std::vector<ObjectStatus>> new_board) {
+    board = new_board;
+  }
   void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
   void set_pow_dots(std::vector<PowDot> new_pow_dots) {
     pow_dots = new_pow_dots;
@@ -302,8 +304,8 @@ public:
     kac_dots = new_kac_dots;
   }
   void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
-  void set_x(int new_x){ x=new_x;}
-  void set_y(int new_y){ y=new_y;}
+  void set_x(int new_x) { x = new_x; }
+  void set_y(int new_y) { y = new_y; }
 };
 
 }; // namespace kac_man
