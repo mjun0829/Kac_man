@@ -109,3 +109,13 @@ using namespace shortest;
 
 
     }
+
+	void shortest_root::set_board(kac_man::Map map){
+		std::vector<std::vector<kac_man::ObjectStatus>> temp_board=map.get_board();
+		for(int i=0;i<map.get_x();i++){
+            for(int j=0;j<map.get_y();j++){
+				space temp_space(i,j,temp_board[i][j]);
+                board[i][j]=temp_space;
+            }
+        }
+	}
