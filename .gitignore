@@ -1,0 +1,4 @@
+
+#.gitignore파일 제외 목록
+test.txt
+*.json
