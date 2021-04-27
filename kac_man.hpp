@@ -101,6 +101,30 @@ public:
 };
 
 /*
+  다음은 kac_man에 관한 클래스이다.
+  strong여부, life수를 변수로 가지고있다.
+
+*/
+class KacMan : public MovingObject {
+private:
+  bool is_strong;
+  int life;
+
+public:
+  KacMan();
+  KacMan(int new_x, int new_y, int new_life);
+
+  int new_life(void) const { return life; }
+  bool get_is_strong(void) const { return is_strong; }
+
+  void set_life(int new_life) { life = new_life; }
+  void set_is_strong(bool new_status) { is_strong = new_status; }
+
+  /* 현재 life를 1 감소 시킨다.*/
+  void decrease_life(void);
+};
+
+/*
   다음은 맵의 필드 위에 있는 점에 대한 클래스이다.
   Object를 상속받고 있고, PowDot, KacDot를 상속하고 있다.
 */
@@ -135,30 +159,6 @@ public:
 class KacDot : public Dot {
 public:
   KacDot();
-};
-
-/*
-  다음은 kac_man에 관한 클래스이다.
-  strong여부, life수를 변수로 가지고있다.
-
-*/
-class KacMan : public MovingObject {
-private:
-  bool is_strong;
-  int life;
-
-public:
-  KacMan();
-  KacMan(int new_x, int new_y, int new_life);
-
-  int new_life(void) const { return life; }
-  bool get_is_strong(void) const { return is_strong; }
-
-  void set_life(int new_life) { life = new_life; }
-  void set_is_strong(bool new_status) { is_strong = new_status; }
-
-  /* 현재 life를 1 감소 시킨다.*/
-  void decrease_life(void);
 };
 
 /*
