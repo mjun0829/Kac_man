@@ -1,5 +1,6 @@
 #include "kac_man.hpp"
 #include <iostream>
+#include <vector>
 #include <fstream>
 #include <string>
 #include <cstring>
@@ -15,7 +16,6 @@ using namespace kac_man;
 #define map_view_max_x 30
 #define map_select_max_x 12
 
-
 void GameManager::init_ncurses(){
 	initscr();
 	noecho();
@@ -24,16 +24,16 @@ void GameManager::init_ncurses(){
 	set_main_scr(make_scr(scr_max_y, main_max_x, 0, 0));
 	set_game_scr(make_scr(scr_max_y, game_max_x, 0, 0));
 	set_game_score_scr(make_scr(scr_max_y, game_score_max_x, 0, game_max_x));
-	set_map_view_max_x(make_scr(scr_max_y, map_view_max_x, 0, 0));
-	set_map_select_max_x(make_scr(scr_max_y, map_select_max_x, 0, map_view_max_x));
+	set_map_view_scr(make_scr(scr_max_y, map_view_max_x, 0, 0));
+	set_map_select_scr(make_scr(scr_max_y, map_select_max_x, 0, map_view_max_x));
 }
 
 WINDOW *GameManager::make_scr(int max_y, int max_x, int start_y, int start_x){
 	return newwin(max_y, max_x, start_y, start_x);
 }
 
-void GameManager::print_game_init_objs(){
-	Map temp_board = get_board();
+void GameManager::print_game_init_objs(kac_man::Map map){
+	std::vector<std::vector<kac_man::ObjectStatus>> temp_board = map.get_board();
 	wborder(get_game_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
 	wborder(get_game_score_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
 	for(int y = 0; y < temp_board.size(); y++){
@@ -56,14 +56,18 @@ void GameManager::print_game_init_objs(){
 	wrefresh(get_game_score_scr());
 }
 
-void GameManager::print_game_repeat_objs(){
-	KacMan temp_man = get_kac_man();
-	Ghost temp_ghost = get_ghost();
-	mvwprintw(get_game_scr(), temp_man.get_y, temp_man.get_x, "K");
-	mvwprintw(get_game_scr(), temp_ghost.get_y, temp_ghost.get_x, "G");
+void GameManager::print_game_repeat_objs(kac_man::Map map){
+	std::vector<Ghost> temp_ghost = map.get_ghosts();
+	KacMan temp_man = map.get_kac_man();
+	mvwprintw(get_game_scr(), temp_man.get_y(), temp_man.get_x(), "K");
+	for(int x = 0; x < temp_ghost.size(); x++){
+		mvwprintw(get_game_scr(), temp_ghost[x].get_y(), temp_ghost[x].get_x(), "G");
+	}
 	wrefresh(get_game_scr());
-	mvwprintw(get_game_scr(), temp_man.get_y, temp_man.get_x, " ");
-        mvwprintw(get_game_scr(), temp_ghost.get_y, temp_ghost.get_x, " ");
+	mvwprintw(get_game_scr(), temp_man.get_y(), temp_man.get_x(), " ");
+	for(int x = 0; x < temp_ghost.size(); x++){
+        	mvwprintw(get_game_scr(), temp_ghost[x].get_y(), temp_ghost[x].get_x(), " ");
+	}
 }
 /*
 void GameManager::load_map(){
@@ -88,9 +92,10 @@ void GameManager::load_map(){
 	fd.close();
 }
 */
-void GameManager::game_keypad_manage(){
-	Kac_man temp_man = get_kac_man();
-	int input = getch();
+void GameManager::game_manage(kac_man::Map map){
+	KacMan temp_man = map.get_kac_man();
+	while(1){
+		int input = getch();
 	switch(input){
 		case KEY_UP:
 			temp_man.set_dir_x(UP);
@@ -108,7 +113,10 @@ void GameManager::game_keypad_manage(){
 			temp_man.set_dir_x(0);
 			temp_man.set_dir_y(LEFT);
 			continue;
+		case 'q':
+			break;
 
+	}
 	}
 }
 
@@ -139,9 +147,11 @@ void GameManager::print_main_scr(){
 }
 
 void GameManager::print_game_scr(){
+	init_ncurses();
 	print_game_init_objs();
 	while(1){
 		print_game_repeat_objs();
 		frame_timer();
+		game_manage();
 	}
 }

@@ -232,22 +232,22 @@ private:
 
 public:
   GameManager();
-  WINDOW *get_main_scr const {return main_scr;}
-  WINDOW *get_game_scr const {return game_scr;}
-  WINDOW *get_game_score_scr const {return game_scr;}
-  WINDOW *get_map_view_scr const {return map_view_scr;}
-  WINDOW *get_map_select_scr const {return map_select_scr;}
+  WINDOW *get_main_scr() const {return main_scr;}
+  WINDOW *get_game_scr() const {return game_scr;}
+  WINDOW *get_game_score_scr() const {return game_scr;}
+  WINDOW *get_map_view_scr() const {return map_view_scr;}
+  WINDOW *get_map_select_scr() const {return map_select_scr;}
   void init_ncurses();
   void set_main_scr(WINDOW *ptr) { main_scr = ptr; }
   void set_game_scr(WINDOW *ptr) { game_scr = ptr; }
   void set_game_score_scr(WINDOW *ptr) { game_score_scr = ptr; }
-  void set_map_view_scr(WINDOW *ptr) { option_map_view_scr = ptr; }
-  void set_map_select_scr(WINDOW *ptr) { option_map_select_scr = ptr; }
+  void set_map_view_scr(WINDOW *ptr) { map_view_scr = ptr; }
+  void set_map_select_scr(WINDOW *ptr) { map_select_scr = ptr; }
   WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
-  void print_game_init_objs();
-  void print_game_repeat_objs();
+  void print_game_init_objs(kac_man::Map map);
+  void print_game_repeat_objs(kac_man::Map map);
   void load_map();
-  void game_keypad_manage();
+  void game_manage(kac_man::Map map);
   void frame_timer();
   void print_main_scr();
   void print_game_scr():
