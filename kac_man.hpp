@@ -41,7 +41,6 @@ public:
 /*
 다음은 dot, MovingObject의 부모 클래스이다.
 각 객체의 좌표 정보를 담고 있는 x, y를 가지고 있다.
-
 */
 class Object {
 private:
@@ -81,63 +80,6 @@ public:
   // 현재 x,y 좌표 각각에 dir_x, dir_y를 더한다.
   // 다음 이동방향에 다른 객체가 있다면 이 함수를 호출할 수 없다.
   void move();
-};
-
-/*
-다음은 Object를 변수로 가지고있고, object간의 상호작용에 관련된 함수를
-가지고있다. 현재 각 칸의 상태를 표시하는 board, 유령들을 모아둔 ghosts,
-pow_dot을 모아둔 pow_dots
-kac_dot을 모아둔 kac_dots
-kac_man을 가지고 있다.
-
-*/
-class ObjectManager : public Map {
-private:
-  Variables variables;
-
-public:
-  // ObjectManger의 초기생성자로서, 모든 object를 map정보, variable정보를 토대로
-  // 생성한다.
-  ObjectManager();
-  Variables get_variables(void) const { return variables; }
-
-  /*
-  유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
-  */
-  void set_map(Map new_map);
-  void set_variables(Variables new_variables) { variables = new_variables; }
-
-  /*
-    다음은 상호작용에 관한 함수들이다.
-    kac_man - ghost가 닿았을 때 호출하는 함수
-    is_man_strong에는 오직 kac_man.get_is_strong()이 들어간다.
-  */
-  void man_ghost_crush(bool is_man_strong);
-
-  //target_ghost의 현재 위치를 리스폰지역으로 보냄.
-  void ghost_respawn(Ghost target_ghost);
-
-  //(x,y)에 해당하는 ghost의 index를 반환함
-  int find_target_ghost();
-
-  //target_kac_man의 현재 위치를 리스폰지역으로 보냄.
-  void man_respawn(KacMan target_kac_man);
-
-  /*
-    kac_man - kac_dot이 닿았을 때 호출하는 함수
-  */
-  void man_kdot_crush(void);
-
-  //좌표 x,y에 있는 위치에 vector<dot> dots의 index 반환
-  // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
-  // status == POW_DOT 이면 vector<dot> pow_dots에서 찾음
-  // status가 이상한거 들어가면 일부로 에러가 나도록 -1 반환
-  int find_target_dot_num(int x, int y, int status) const;
-
-  /*
-     kac_man과 pow_dot이 닿았을 때 호출하는 함수
-  */
-  void man_pdot_crush(void);
 };
 
 /*
@@ -219,46 +161,6 @@ public:
   void decrease_life(void);
 };
 
-class GameManager {
-private:
-  ObjectManager object_manager;
-  int score;
-  /*윈도우 포인터*/
-  WINDOW *main_scr;
-  WINDOW *game_scr;
-  WINDOW *game_score_scr;
-  WINDOW *option_map_view_scr;
-  WINDOW *option_map_select_scr;
-
-public:
-  GameManager();
-  WINDOW *get_main_scr() const {return main_scr;}
-  WINDOW *get_game_scr() const {return game_scr;}
-  WINDOW *get_game_score_scr() const {return game_scr;}
-  WINDOW *get_map_view_scr() const {return option_map_view_scr;}
-  WINDOW *get_map_select_scr() const {return option_map_select_scr;}
-  void init_ncurses();
-  void set_main_scr(WINDOW *ptr) {main_scr = ptr;}
-  void set_game_scr(WINDOW *ptr) {game_scr = ptr;}
-  void set_game_score_scr(WINDOW *ptr) {game_score_scr = ptr;}
-  void set_map_view_scr(WINDOW *ptr) {option_map_view_scr = ptr;}
-  void set_map_select_scr(WINDOW *ptr) {option_map_select_scr = ptr;}
-  WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
-  void print_game_init_objs();
-  void print_game_repeat_objs();
-  void load_map();
-  void keypad_manage();
-  /*
-  승리 여부를 검사하는 함수 - <algorithm> 의 std::all_of 를 이용할 것
-  */
-  const bool check_victory();
-
-  /*패배 여부를 검사하는 함수 - KacMan의 life==0인지 확인*/
-  const bool check_defeat();
-
-  /*게임을 종료하는 함수*/
-};
-
 /*
 맵 정보를 담고 있는 클래스
 ObjectManager의 private 변수들의 초기값들을 저장하고있음.
@@ -284,8 +186,8 @@ public:
   std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
   std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
-  int get_x(void){ return x ;}
-  int get_y(void){return y;}
+  int get_x(void) { return x; }
+  int get_y(void) { return y; }
   std::vector<Object> get_man_respawn_spots() const {
     return man_respawn_spots;
   }
@@ -293,7 +195,9 @@ public:
     return ghost_respawn_spots;
   }
 
-  void set_board(std::vector<std::vector<ObjectStatus>> new_board) { board = new_board; }
+  void set_board(std::vector<std::vector<ObjectStatus>> new_board) {
+    board = new_board;
+  }
   void set_ghosts(std::vector<Ghost> new_ghosts) { ghosts = new_ghosts; }
   void set_pow_dots(std::vector<PowDot> new_pow_dots) {
     pow_dots = new_pow_dots;
@@ -302,8 +206,104 @@ public:
     kac_dots = new_kac_dots;
   }
   void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
-  void set_x(int new_x){ x=new_x;}
-  void set_y(int new_y){ y=new_y;}
+  void set_x(int new_x) { x = new_x; }
+  void set_y(int new_y) { y = new_y; }
+};
+
+/*
+다음은 Object를 변수로 가지고있고, object간의 상호작용에 관련된 함수를
+가지고있다. 현재 각 칸의 상태를 표시하는 board, 유령들을 모아둔 ghosts,
+pow_dot을 모아둔 pow_dots
+kac_dot을 모아둔 kac_dots
+kac_man을 가지고 있다.
+*/
+class ObjectManager : public Map {
+private:
+  Variables variables;
+
+public:
+  // ObjectManger의 초기생성자로서, 모든 object를 map정보, variable정보를 토대로
+  // 생성한다.
+  ObjectManager();
+  Variables get_variables(void) const { return variables; }
+
+  /*
+  유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
+  */
+  void set_map(Map new_map);
+  void set_variables(Variables new_variables) { variables = new_variables; }
+
+  /*
+    다음은 상호작용에 관한 함수들이다.
+    kac_man - ghost가 닿았을 때 호출하는 함수
+    is_man_strong에는 오직 kac_man.get_is_strong()이 들어간다.
+  */
+  void man_ghost_crush(bool is_man_strong);
+
+  // target_ghost의 현재 위치를 리스폰지역으로 보냄.
+  void ghost_respawn(Ghost target_ghost);
+
+  //(x,y)에 해당하는 ghost의 index를 반환함
+  int find_target_ghost();
+
+  // target_kac_man의 현재 위치를 리스폰지역으로 보냄.
+  void man_respawn(KacMan target_kac_man);
+
+  /*
+    kac_man - kac_dot이 닿았을 때 호출하는 함수
+  */
+  void man_kdot_crush(void);
+
+  //좌표 x,y에 있는 위치에 vector<dot> dots의 index 반환
+  // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
+  // status == POW_DOT 이면 vector<dot> pow_dots에서 찾음
+  // status가 이상한거 들어가면 일부로 에러가 나도록 -1 반환
+  int find_target_dot_num(int x, int y, int status) const;
+
+  /*
+     kac_man과 pow_dot이 닿았을 때 호출하는 함수
+  */
+  void man_pdot_crush(void);
+};
+
+class GameManager {
+private:
+  ObjectManager object_manager;
+  int score;
+  /*윈도우 포인터*/
+  WINDOW *main_scr;
+  WINDOW *game_scr;
+  WINDOW *game_score_scr;
+  WINDOW *option_map_view_scr;
+  WINDOW *option_map_select_scr;
+
+public:
+  GameManager();
+  WINDOW *get_main_scr() const { return main_scr; }
+  WINDOW *get_game_scr() const { return game_scr; }
+  WINDOW *get_game_score_scr() const { return game_scr; }
+  WINDOW *get_map_view_scr() const { return option_map_view_scr; }
+  WINDOW *get_map_select_scr() const { return option_map_select_scr; }
+  void init_ncurses();
+  void set_main_scr(WINDOW *ptr) { main_scr = ptr; }
+  void set_game_scr(WINDOW *ptr) { game_scr = ptr; }
+  void set_game_score_scr(WINDOW *ptr) { game_score_scr = ptr; }
+  void set_map_view_scr(WINDOW *ptr) { option_map_view_scr = ptr; }
+  void set_map_select_scr(WINDOW *ptr) { option_map_select_scr = ptr; }
+  WINDOW *make_scr(int max_y, int max_x, int start_y, int start_x);
+  void print_game_init_objs();
+  void print_game_repeat_objs();
+  void load_map();
+  void keypad_manage();
+  /*
+  승리 여부를 검사하는 함수 - <algorithm> 의 std::all_of 를 이용할 것
+  */
+  const bool check_victory();
+
+  /*패배 여부를 검사하는 함수 - KacMan의 life==0인지 확인*/
+  const bool check_defeat();
+
+  /*게임을 종료하는 함수*/
 };
 
 }; // namespace kac_man
