@@ -299,7 +299,7 @@ public:
   승리 여부를 검사하는 함수 - <algorithm> 의 std::all_of 를 이용할 것
   */
   bool check_victory() const;
-
+  //
   /*패배 여부를 검사하는 함수 - KacMan의 life==0인지 확인*/
   bool check_defeat() const;
 
