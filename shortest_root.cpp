@@ -62,7 +62,7 @@ using namespace shortest;
         std::queue<space> board_q;
 	    space temp;
 	    space ref;
-d
+
 	    board_q.push(board[x][y]);
 	    for (int n = 0; board_q.size() > 0; n++) {
 	    	while (1) {
@@ -109,3 +109,13 @@ d
 
 
     }
+
+	void shortest_root::set_board(kac_man::Map map){
+		std::vector<std::vector<kac_man::ObjectStatus>> temp_board=map.get_board();
+		for(int i=0;i<map.get_x();i++){
+            for(int j=0;j<map.get_y();j++){
+				space temp_space(i,j,temp_board[i][j]);
+                board[i][j]=temp_space;
+            }
+        }
+	}

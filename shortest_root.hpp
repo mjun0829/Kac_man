@@ -34,11 +34,11 @@ namespace shortest {
 		void push_root_L(std::vector<char> ref) { root = ref; root.push_back('L'); }	//root 에 L 대입
 		void push_root_U(std::vector<char> ref) { root = ref; root.push_back('U'); }	//root 에 U 대입
 		void push_root_D(std::vector<char> ref) { root = ref; root.push_back('D'); }	//root 에 D 대입
-		const int get_x() { return x; }
-		const int get_y() { return y; }
-		const int get_status() { return status; }
-		const int get_root_num() { return root_num; }
-		const std::vector<char> get_root(){ return root; }
+		int get_x() const { return x; }
+		int get_y() const { return y; }
+		int get_status() const { return status; }
+		int get_root_num() const { return root_num; }
+		std::vector<char> get_root() const { return root; }
 		space& operator=(const space &ref) { x = ref.x; y = ref.y; status = ref.status; root_num = ref.root_num; root = ref.root; return *this; }
 		bool compare_root_num(int n){return n<root_num;}	//현재의 root_num과 n 값을 비교하여 n이 작으면 TRUE n이 크면 FALSE 리턴
 	};
@@ -54,6 +54,8 @@ namespace shortest {
 		std::vector<std::vector<space>> board;
 	public:
 		shortest_root(kac_man::Map map );	//map 클래스 받아와서 2차원 배열 각각의 칸에 space를 정의한다.
+		std::vector<std::vector<space>> get_board() const {return board;}
+		void set_board(kac_man::Map map);	//board를 다시 현재 map상태로 바꾼다.
 		void trace(kac_man::Map map);	//최단거리 알고리즘
 	};
 }
