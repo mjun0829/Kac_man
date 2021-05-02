@@ -29,9 +29,9 @@ private:
 
 public:
   Variables();
-  const double get_w_speed(void) { return weak_speed; }
-  const double get_n_speed(void) { return normal_speed; }
-  const int get_life(void) { return life; }
+  double get_w_speed(void) const { return weak_speed; }
+  double get_n_speed(void) const { return normal_speed; }
+  int get_life(void) const { return life; }
 
   void set_w_speed(double new_speed) { weak_speed = new_speed; }
   void set_n_speed(double new_speed) { normal_speed = new_speed; }
@@ -48,11 +48,10 @@ private:
   int y;
 
 public:
-  Object();
   Object(int new_x, int new_y);
 
-  const int get_x(void) { return x; }
-  const int get_y(void) { return y; }
+  int get_x(void) const { return x; }
+  int get_y(void) const { return y; }
   void set_x(int new_x) { x = new_x; }
   void set_y(int new_y) { y = new_y; }
 };
@@ -67,11 +66,10 @@ private:
   int dir_y;
 
 public:
-  MovingObject();
-  MovingObject(int new_d_x, int new_d_y);
+  MovingObject(int new_d_x, int new_d_y, int new_x, int new_y);
 
-  const int get_dir_x(void) { return dir_x; }
-  const int get_dir_y(void) { return dir_y; }
+  int get_dir_x(void) const { return dir_x; }
+  int get_dir_y(void) const { return dir_y; }
 
   void set_dir_x(int new_dir_x) { dir_x = new_dir_x; }
   void set_dir_y(int new_dir_y) { dir_y = new_dir_y; }
@@ -88,6 +86,7 @@ public:
   가지고있다.
   [초기값]
   is_weak = false
+  알고리즘 함수를 가리키는 함수포인터를 이용해서 ghost의 움직임을 제어할 예정
 */
 class Ghost : public MovingObject {
 private:
@@ -96,7 +95,7 @@ private:
 public:
   Ghost();
 
-  const bool get_status(void) { return is_weak; }
+  bool get_status(void) const { return is_weak; }
   void set_status(bool new_status) { is_weak = new_status; }
 };
 
@@ -133,7 +132,6 @@ private:
   bool is_empty;
 
 public:
-  Dot();
   Dot(int new_x, int new_y);
 
   bool get_is_empty(void) const { return is_empty; }
@@ -148,7 +146,7 @@ public:
 */
 class PowDot : public Dot {
 public:
-  PowDot();
+  PowDot(int new_x, int new_y);
 };
 
 /*
@@ -158,14 +156,14 @@ public:
 */
 class KacDot : public Dot {
 public:
-  KacDot();
+  KacDot(int new_x, int new_y);
 };
 
 /*
 맵 정보를 담고 있는 클래스
 ObjectManager의 private 변수들의 초기값들을 저장하고있음.
 추후 맵에디터를 제작할 때 반환값으로 쓰일 클래스
- 맵 크기는 x,y이용해서 표현 x->행 개수 y ->열 개수
+맵 크기는 row_num, col_num으로 표현
 */
 class Map {
 private:
@@ -176,18 +174,22 @@ private:
   KacMan kac_man;
   std::vector<Object> man_respawn_spots;
   std::vector<Object> ghost_respawn_spots;
-  int x;
-  int y;
+  int col_num;
+  int row_num;
 
 public:
-  Map();
+  Map::Map(std::vector<std::vector<ObjectStatus>> board,
+           std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
+           std::vector<KacDot> kac_dots, KacMan kac_man,
+           std::vector<Object> man_respawn_spots,
+           std::vector<Object> ghost_respawn_spots, int col_num, int row_num);
   std::vector<std::vector<ObjectStatus>> get_board(void) const { return board; }
   std::vector<Ghost> get_ghosts(void) const { return ghosts; }
   std::vector<PowDot> get_pow_dots(void) const { return pow_dots; }
   std::vector<KacDot> get_kac_dots(void) const { return kac_dots; }
   KacMan get_kac_man(void) const { return kac_man; }
-  int get_x(void) { return x; }
-  int get_y(void) { return y; }
+  int get_col_num(void) const { return col_num; }
+  int get_row_num(void) const { return row_num; }
   std::vector<Object> get_man_respawn_spots() const {
     return man_respawn_spots;
   }
@@ -206,8 +208,8 @@ public:
     kac_dots = new_kac_dots;
   }
   void set_kac_man(KacMan new_kac_man) { kac_man = new_kac_man; }
-  void set_x(int new_x) { x = new_x; }
-  void set_y(int new_y) { y = new_y; }
+  void set_col_num(int new_col_num) { col_num = new_col_num; }
+  void set_row_num(int new_row_num) { row_num = new_row_num; }
 };
 
 /*
@@ -224,7 +226,12 @@ private:
 public:
   // ObjectManger의 초기생성자로서, 모든 object를 map정보, variable정보를 토대로
   // 생성한다.
-  ObjectManager();
+  ObjectManager(std::vector<std::vector<ObjectStatus>> board,
+           std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
+           std::vector<KacDot> kac_dots, KacMan kac_man,
+           std::vector<Object> man_respawn_spots,
+           std::vector<Object> ghost_respawn_spots, int col_num, int row_num,
+           Variables new_variables);
   Variables get_variables(void) const { return variables; }
 
   /*
@@ -266,6 +273,10 @@ public:
   void man_pdot_crush(void);
 };
 
+/*
+  게임 실행에 관련되어있는 최상위 클래스
+
+*/
 class GameManager {
 private:
   ObjectManager object_manager;

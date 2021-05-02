@@ -2,9 +2,57 @@
 
 using namespace kac_man;
 
-ObjectManager::ObjectManager() {
-  set_map(Map());
-  set_variables(Variables());
+Variables::Variables() {
+  /*
+  값을 정해야함
+  */
+  life = 3;
+}
+
+Object::Object(int new_x, int new_y) : x(new_x), y(new_y) {}
+
+MovingObject::MovingObject(int new_d_x, int new_d_y, int new_x, int new_y)
+    : dir_x(new_d_x), dir_y(new_d_y), Object(new_x, new_y) {}
+
+void MovingObject::move() {
+  int temp_x = get_x();
+  int temp_y = get_y();
+  temp_x += get_dir_x();
+  temp_y += get_dir_y();
+  set_x(temp_x);
+  set_y(temp_y);
+}
+
+Dot::Dot(int new_x, int new_y) : Object(new_x, new_y) {}
+
+PowDot::PowDot(int new_x, int new_y) : Dot(new_x, new_y) {}
+
+KacDot::KacDot(int new_x, int new_y) : Dot(new_x, new_y) {}
+
+Map::Map(std::vector<std::vector<ObjectStatus>> board,
+         std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
+         std::vector<KacDot> kac_dots, KacMan kac_man,
+         std::vector<Object> man_respawn_spots,
+         std::vector<Object> ghost_respawn_spots, int col_num, int row_num){
+    this->board = board;
+    this->pow_dots = pow_dots;
+    this->ghosts = ghosts;
+    this->kac_dots = kac_dots;
+    this->kac_man = kac_man;
+    this->man_respawn_spots = man_respawn_spots;
+    this->ghost_respawn_spots = ghost_respawn_spots;
+    this->col_num = col_num;
+    this->row_num = row_num;
+}
+
+ObjectManager::ObjectManager(std::vector<std::vector<ObjectStatus>> board,
+    std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
+    std::vector<KacDot> kac_dots, KacMan kac_man,
+    std::vector<Object> man_respawn_spots,
+    std::vector<Object> ghost_respawn_spots, int col_num, int row_num,
+    Variables new_variables) : Map(board, ghosts, pow_dots, kac_dots,
+      kac_man, man_respawn_spots, ghost_respawn_spots, col_num,row_num) {
+        variables = new_variables;
 }
 
 void ObjectManager::set_map(Map new_map) {
