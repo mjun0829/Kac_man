@@ -1,8 +1,7 @@
 #include <iostream>
-#include "shortest_root.hpp"
 #include "kac_man.hpp"
 
-using namespace shortest;
+using namespace kac_man;
 
     space::space() {
 		int x = 0;
@@ -45,9 +44,9 @@ using namespace shortest;
 
     shortest_root::shortest_root(kac_man::Map map){
         std::vector<std::vector<kac_man::ObjectStatus>> temp_board=map.get_board();
-        for(int i=0;i<map.get_x();i++){
+        for(int i=0;i<map.get_row_num();i++){
             std::vector<space> temp;
-            for(int j=0;j<map.get_y();j++){
+            for(int j=0;j<map.get_col_num();j++){
                 space temp_space(i,j,temp_board[i][j]);
                 temp.push_back(temp_space);
             }
@@ -112,8 +111,8 @@ using namespace shortest;
 
 	void shortest_root::set_board(kac_man::Map map){
 		std::vector<std::vector<kac_man::ObjectStatus>> temp_board=map.get_board();
-		for(int i=0;i<map.get_x();i++){
-            for(int j=0;j<map.get_y();j++){
+		for(int i=0;i<map.get_row_num();i++){
+            for(int j=0;j<map.get_col_num();j++){
 				space temp_space(i,j,temp_board[i][j]);
                 board[i][j]=temp_space;
             }
