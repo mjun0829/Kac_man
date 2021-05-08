@@ -124,9 +124,9 @@ life : 3
 
     bool get_status(void) const { return is_weak; }
     void set_status(bool new_status) { is_weak = new_status; }
-    void ghost_trace(Map ref_map);
-    void ghost_random(Map ref_map);
-    void ghost_away(Map ref_map);
+    void ghost_trace(Map ref_map);//ghost가 Kac_man을 향해 최단거리로 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_random(Map ref_map); //ghost가 랜덤으로 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_away(Map ref_map);   //ghost가 Kac_man으로부터 멀어지게 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
   };
 
   /*
