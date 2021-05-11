@@ -5,6 +5,7 @@
 #include <cstring>
 #include <ncurses.h>
 #include <time.h>
+#include <cmath>
 
 #define scr_max_y 33
 #define main_max_x 42
@@ -27,14 +28,17 @@ int kac_y = 1;
 int kac_x_dir = 0;
 int kac_y_dir = 0;
 int kac_speed = 1;
+bool kac_strong = FALSE;
+int game_score = 0;
+int game_life = 3;
 
 int temp_board[31][28] = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-	{1,2,0,0,0,0,3,3,3,3,3,0,0,1,1,0,0,4,4,4,4,4,5,5,5,5,5,1},
-	{1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-	{1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-	{1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,2,4,4,4,4,4,4,4,4,4,4,4,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,1,1,1,1,0,1,1,1,1,1,5,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
+	{1,0,1,1,1,1,0,1,1,1,1,1,3,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
+	{1,0,1,1,1,1,0,1,1,1,1,1,3,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
+	{1,0,0,0,0,0,0,3,5,3,5,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1},
 	{1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,0,1},
 	{1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,1},
@@ -55,7 +59,7 @@ int temp_board[31][28] = {
 	{1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1},
 	{1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
 	{1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
-	{1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -65,6 +69,8 @@ int temp_board[31][28] = {
 void init_ncurses();
 void frame_timer();
 void print_main_scr();
+void print_game_obj();
+void print_game_score_obj();
 void print_game_scr();
 void print_option_scr();
 
@@ -73,13 +79,13 @@ void init_ncurses(){
 	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
-	curs_set(0);
+	curs_set(FALSE);
 	start_color();
-	init_pair(1, 7, 0);
-	init_pair(2, 3, 0);
-	init_pair(3, 1, 0);
-	init_pair(4, 3, 0);
-	init_pair(5, 3, 0);
+	init_pair(WALL, COLOR_WHITE, COLOR_BLACK);
+	init_pair(KAC_MAN, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(GHOST, COLOR_RED, COLOR_BLACK);
+	init_pair(10, COLOR_BLUE, COLOR_BLACK);
+	init_pair(KAC_DOT, COLOR_GREEN, COLOR_BLACK);
 }
 
 void frame_timer(){
@@ -145,49 +151,93 @@ void print_main_scr(){
 	}
 }
 
-void print_game_scr(){
-	int end = 1, timer = 0;
-	while(end == 1){
-	frame_timer();
-	timer++;
-	game_scr = newwin(scr_max_y, game_max_x, 0, 0);
-	game_score_scr = newwin(scr_max_y, game_score_max_x, 0, game_max_x);
+void print_game_obj(){
 	wborder(game_scr, '|', '|', '-', '-', '+', '+', '+', '+');
 	wborder(game_score_scr, '|', '|', '-', '-', '+', '+', '+', '+');
 	for(int y = 0; y < 31; y++){
 		for(int x = 0; x < 28; x++){
 			if(temp_board[y][x] == EMPTY){
-				attron(COLOR_PAIR(1));
+				wattron(game_scr, COLOR_PAIR(WALL));
 				mvwprintw(game_scr, y + 1, x + 1, " ");
 			}
 			else if(temp_board[y][x] == WALL){
-				attron(COLOR_PAIR(1));
+				wattron(game_scr, COLOR_PAIR(WALL));
 				mvwprintw(game_scr, y + 1, x + 1, "W");
 			}
 			else if(temp_board[y][x] == KAC_MAN){
-				attron(COLOR_PAIR(2));
+				wattron(game_scr, COLOR_PAIR(KAC_MAN));
 				mvwprintw(game_scr, y + 1, x + 1, "K");
 			}
 			else if(temp_board[y][x] == GHOST){
-				attron(COLOR_PAIR(3));
+				if(kac_strong){
+					wattron(game_scr, COLOR_PAIR(10));
+				}
+				else{
+					wattron(game_scr, COLOR_PAIR(GHOST));
+				}
 				mvwprintw(game_scr, y + 1, x + 1, "G");
 			}
 			else if(temp_board[y][x] == KAC_DOT){
-				attron(COLOR_PAIR(4));
-				mvwprintw(game_scr, y + 1, x + 1, "d");
+				wattron(game_scr, COLOR_PAIR(KAC_DOT));
+				mvwprintw(game_scr, y + 1, x + 1, "+");
 			}
 			else if(temp_board[y][x] == POW_DOT){
-				attron(COLOR_PAIR(5));
+				wattron(game_scr, COLOR_PAIR(KAC_DOT));
 				mvwprintw(game_scr, y + 1, x + 1, "D");
 			}
 		}
 	}
 	wrefresh(game_scr);
+}
+
+void print_game_score_obj(){
+	mvwprintw(game_score_scr, 9, 1, " Life : %d", game_life);
+	mvwprintw(game_score_scr, 12, 1, " Score");
+	mvwprintw(game_score_scr, 13, 1, " : %d", game_score);
 	wrefresh(game_score_scr);
+}
+
+void print_game_scr(){
+	int end = 1, timer = 0, strong_timer = 0;
+	double strong_point = 1.0;
+	while(end == 1){
+	frame_timer();
+	timer++;
+	if(kac_strong){
+		strong_timer++;
+	}
+	if(strong_timer >= 300){
+		kac_strong = FALSE;
+		strong_timer = 0;
+	}
+	game_scr = newwin(scr_max_y, game_max_x, 0, 0);
+	game_score_scr = newwin(scr_max_y, game_score_max_x, 0, game_max_x);
+	print_game_obj();
+	print_game_score_obj();
 	if((timer%(15 - kac_speed)) == 0 && (temp_board[kac_y+kac_y_dir][kac_x+kac_x_dir] != WALL)){
 		temp_board[kac_y][kac_x] = EMPTY;
 		kac_x = kac_x + kac_x_dir;
 		kac_y = kac_y + kac_y_dir;
+		if(temp_board[kac_y][kac_x] == GHOST && !kac_strong){
+			game_life--;
+			kac_y = 1;
+			kac_x = 1;
+			kac_y_dir = 0;
+			kac_x_dir = 0;
+		}
+		if(temp_board[kac_y][kac_x] == GHOST && kac_strong){
+			game_score = game_score + 100 * (int)pow(2.0, strong_point);
+			strong_point++;
+		}
+		if(temp_board[kac_y][kac_x] == KAC_DOT){
+			game_score = game_score + 10;
+		}
+		if(temp_board[kac_y][kac_x] == POW_DOT){
+			game_score = game_score + 50;
+			strong_point = 1.0;
+			kac_strong = TRUE;
+			strong_timer = 0;
+		}
 		temp_board[kac_y][kac_x] = KAC_MAN;
 	}
 	int input = getch();
