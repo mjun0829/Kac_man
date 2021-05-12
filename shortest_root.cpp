@@ -45,7 +45,7 @@ void space::set_space(int new_x, int new_y, int new_status)
 		root_num = INFINITE;
 }
 
-shortest_root::shortest_root(kac_man::Map map)
+shortest_root::shortest_root(kac_man::ObjectManager map)
 {
 	std::vector<std::vector<int>> temp_board = map.get_board();
 	for (int i = 0; i < map.get_row_num(); i++)
@@ -61,7 +61,7 @@ shortest_root::shortest_root(kac_man::Map map)
 	trace(map);
 }
 
-void shortest_root::trace(kac_man::Map map)
+void shortest_root::trace(kac_man::ObjectManager map)
 {
 	kac_man::KacMan temp_kac_man = map.get_kac_man();
 	int x = temp_kac_man.get_x();
@@ -122,7 +122,7 @@ void shortest_root::trace(kac_man::Map map)
 	}
 }
 
-void shortest_root::set_board(kac_man::Map map)
+void shortest_root::set_board(kac_man::ObjectManager map)
 {
 	std::vector<std::vector<int>> temp_board = map.get_board();
 	for (int i = 0; i < map.get_row_num(); i++)

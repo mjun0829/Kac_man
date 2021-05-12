@@ -2,8 +2,7 @@
 
 using namespace kac_man;
 
-
-void Ghost::ghost_trace(Map ref_map)
+void Ghost::ghost_trace(ObjectManager ref_map)
 {
     shortest_root ref_short(ref_map);
     space ref_space;
@@ -36,7 +35,7 @@ void Ghost::ghost_trace(Map ref_map)
     }
 }
 
-void Ghost::ghost_random(Map ref_map)
+void Ghost::ghost_random(ObjectManager ref_map)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -120,7 +119,7 @@ void Ghost::ghost_random(Map ref_map)
     }
 }
 
-void Ghost::ghost_away(Map ref_map)
+void Ghost::ghost_away(ObjectManager ref_map)
 {
     std::random_device rd;
     std::mt19937 gen(rd());

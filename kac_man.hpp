@@ -127,6 +127,18 @@ life : 3
 
     bool get_status(void) const { return is_weak; }
     void set_status(bool new_status) { is_weak = new_status; }
+
+    // ghost가 Kac_man을 향해 최단거리로 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_trace(ObjectManager ref_map);
+
+    // ghost가 랜덤으로 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_random(ObjectManager ref_map);
+
+    // ghost가 Kac_man으로부터 멀어지게 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_away(ObjectManager ref_map);
   };
 
   /*
@@ -299,17 +311,7 @@ kac_man을 가지고 있다.
     //kac_man - kac_dot이 닿았을 때 호출하는 함수
     void man_kdot_crush(void);
 
-    // ghost가 Kac_man을 향해 최단거리로 움직인다.
-    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
-    void ghost_trace(void);
 
-    // ghost가 랜덤으로 움직인다.
-    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
-    void ghost_random(void);
-
-    // ghost가 Kac_man으로부터 멀어지게 움직인다.
-    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
-    void ghost_away(void);
 
     //좌표 x,y에 있는 위치에 vector<dot> dots의 index 반환
     // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
@@ -455,11 +457,11 @@ kac_man을 가지고 있다.
     std::vector<std::vector<space>> board;
 
   public:
-    shortest_root(kac_man::Map map); //map 클래스 받아와서 2차원 배열 각각의 칸에 space를 정의한다. 정의함과 동시에 최단경로 추적 시작.
+    shortest_root(kac_man::ObjectManager map); //map 클래스 받아와서 2차원 배열 각각의 칸에 space를 정의한다. 정의함과 동시에 최단경로 추적 시작.
     std::vector<std::vector<space>> get_board() const { return board; }
     space get_space(int x, int y) const { return board[x][y]; }
-    void set_board(kac_man::Map map); //board를 다시 현재 map상태로 바꾼다. 바꿈과 동시에 최단경로 추적 시작.
-    void trace(kac_man::Map map);     //최단거리 알고리즘
+    void set_board(kac_man::ObjectManager map); //board를 다시 현재 map상태로 바꾼다. 바꿈과 동시에 최단경로 추적 시작.
+    void trace(kac_man::ObjectManager map);     //최단거리 알고리즘
   };
 }; // namespace kac_man
 
