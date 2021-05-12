@@ -29,7 +29,7 @@ PowDot::PowDot(int new_x, int new_y) : Dot(new_x, new_y) {}
 
 KacDot::KacDot(int new_x, int new_y) : Dot(new_x, new_y) {}
 
-Map::Map(std::vector<std::vector<ObjectStatus>> board,
+Map::Map(std::vector<std::vector<int>> board,
          std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
          std::vector<KacDot> kac_dots, KacMan kac_man,
          std::vector<Object> man_respawn_spots,
@@ -45,7 +45,7 @@ Map::Map(std::vector<std::vector<ObjectStatus>> board,
     this->row_num = row_num;
 }
 
-ObjectManager::ObjectManager(std::vector<std::vector<ObjectStatus>> board,
+ObjectManager::ObjectManager(std::vector<std::vector<int>> board,
     std::vector<Ghost> ghosts, std::vector<PowDot> pow_dots,
     std::vector<KacDot> kac_dots, KacMan kac_man,
     std::vector<Object> man_respawn_spots,

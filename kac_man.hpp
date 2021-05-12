@@ -9,6 +9,7 @@
 #include <iostream>
 #include <random>
 #include <cstdlib>
+#include <functional>
 
 namespace kac_man
 {
@@ -94,11 +95,11 @@ life : 3
 
     int get_dir_x(void) const { return dir_x; }
     int get_dir_y(void) const { return dir_y; }
-    
+
 
     void set_dir_x(int new_dir_x) { dir_x = new_dir_x; }
     void set_dir_y(int new_dir_y) { dir_y = new_dir_y; }
-    
+
 
     // 이동방향으로 한 칸 움직이는 함수
     // 현재 x,y 좌표 각각에 dir_x, dir_y를 더한다.
@@ -119,14 +120,13 @@ life : 3
   private:
     bool is_weak;
 
+    // 알고리즘을 가르키는 포인터
+    std::function<void(ObjectManager&)> algo_ptr;
   public:
     Ghost();
 
     bool get_status(void) const { return is_weak; }
     void set_status(bool new_status) { is_weak = new_status; }
-    void ghost_trace(Map ref_map);//ghost가 Kac_man을 향해 최단거리로 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
-    void ghost_random(Map ref_map); //ghost가 랜덤으로 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
-    void ghost_away(Map ref_map);   //ghost가 Kac_man으로부터 멀어지게 움직인다. Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
   };
 
   /*
@@ -276,9 +276,7 @@ kac_man을 가지고 있다.
                   Variables new_variables);
     Variables get_variables(void) const { return variables; }
 
-    /*
-  유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
-  */
+  // 유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
     void set_map(Map new_map);
     void set_variables(Variables new_variables) { variables = new_variables; }
 
@@ -286,7 +284,7 @@ kac_man을 가지고 있다.
     다음은 상호작용에 관한 함수들이다.
     kac_man - ghost가 닿았을 때 호출하는 함수
     is_man_strong에는 오직 kac_man.get_is_strong()이 들어간다.
-  */
+    */
     void man_ghost_crush(bool is_man_strong);
 
     // target_ghost의 현재 위치를 리스폰지역으로 보냄.
@@ -298,10 +296,20 @@ kac_man을 가지고 있다.
     // target_kac_man의 현재 위치를 리스폰지역으로 보냄.
     void man_respawn(KacMan target_kac_man);
 
-    /*
-    kac_man - kac_dot이 닿았을 때 호출하는 함수
-  */
+    //kac_man - kac_dot이 닿았을 때 호출하는 함수
     void man_kdot_crush(void);
+
+    // ghost가 Kac_man을 향해 최단거리로 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_trace(void);
+
+    // ghost가 랜덤으로 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_random(void);
+
+    // ghost가 Kac_man으로부터 멀어지게 움직인다.
+    // Map을 매개변수로 받아 dir_x와 dir_y값을 변경.
+    void ghost_away(void);
 
     //좌표 x,y에 있는 위치에 vector<dot> dots의 index 반환
     // status == KAC_DOT 이면 vector<dot> kac_dots에서 찾고
@@ -309,16 +317,31 @@ kac_man을 가지고 있다.
     // status가 이상한거 들어가면 일부로 에러가 나도록 -1 반환
     int find_target_dot_num(int x, int y, int status) const;
 
-    /*
-     kac_man과 pow_dot이 닿았을 때 호출하는 함수
-  */
+    // kac_man과 pow_dot이 닿았을 때 호출하는 함수
     void man_pdot_crush(void);
+
+    // 다음은 고스트들이 지정되어있는 알고리즘을 동작하게 하는 함수이다.
+    // 이 함수를 호출하면 알고리즘이 실행되어서 ghost의 dir을 결정한다.
+    void execute_ghost_algo(void);
+
+    // 다음은 man_pdot_cursh에서 호출할 함수이다.
+    // 모든 고스트의 weak = true로 만든다.
+    // kac_man의 is_strong = true로 만든다.
+    void make_all_ghost_weak(void);
+
+    // 다음은 5초를 제는 쓰레드이다.
+    // man_pdot_crush에서 호출할 함수이다.
+    void thread_timer();
+
+    // 다음은 thread_timer로부터 시그널을 받으면 호출할 함수이다.
+    // 모든 고스트의 weak = false로 만든다.
+    // kac_man의 is_strong = true로 만든다.
+    void make_all_ghost_strong(void);
   };
 
   /*
   게임 실행에 관련되어있는 최상위 클래스
-
-*/
+  */
   class GameManager
   {
   private:
