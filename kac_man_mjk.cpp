@@ -150,7 +150,7 @@ void GameManager::print_game_scr(ObjecManager board){
 	}
 }
 
-void print_game_obj(ObjectManager board){
+void GameManager::print_game_obj(ObjectManager board){
 	std::vector<std::vector<int>> temp_board = board.get_board();
 	KacMan temp_man = board.get_kac_man();
 	wborder(get_game_scr(), '|', '|', '-', '-', '+', '+', '+', '+');
@@ -191,7 +191,7 @@ void print_game_obj(ObjectManager board){
 	wrefresh(get_game_scr());
 }
 
-void print_game_score_obj(){
+void GameManager::print_game_score_obj(){
 	Variables var;
 	mvwprintw(get_game_score_scr(), 9 , 1, " LIFE : %d", var.get_life());
 	mvwprintw(get_game_score_scr(), 12, 1, " SCORE");
@@ -199,7 +199,7 @@ void print_game_score_obj(){
 	wrefresh(get_game_score_scr());
 }
 
-void print_option_scr(){
+void GameManager::print_option_scr(){
 	int end = 1, cursor = 1;
 	set_option_scr(make_scr(scr_max_y, main_max_x, 0, 0));
 	while(end == 1){
