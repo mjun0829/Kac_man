@@ -23,7 +23,25 @@ void MovingObject::move() {
   set_y(temp_y);
 }
 
-Dot::Dot(int new_x, int new_y) : Object(new_x, new_y) {}
+Ghost::Ghost(int pos_x,int pos_y,int dir_x, int dir_y)
+    : MovingObject(dir_x, dir_y, pos_x, pos_y) {
+  is_weak = false;
+  algo_ptr = &ObjectManager::ghost_random;
+}
+
+void Ghost::execute_algorithm(ObjectManager OM){
+  algo_ptr(OM);
+}
+
+KacMan::KacMan(int new_x, int new_y, int new_life)
+ : MovingObject(UNDIRECT, UNDIRECT, new_x, new_y) {
+   is_strong = false;
+   life = new_life;
+}
+
+Dot::Dot(int new_x, int new_y) : Object(new_x, new_y) {
+  is_empty = false;
+}
 
 PowDot::PowDot(int new_x, int new_y) : Dot(new_x, new_y) {}
 
@@ -52,7 +70,8 @@ ObjectManager::ObjectManager(std::vector<std::vector<int>> board,
     std::vector<Object> ghost_respawn_spots, int col_num, int row_num,
     Variables new_variables) : Map(board, ghosts, pow_dots, kac_dots,
       kac_man, man_respawn_spots, ghost_respawn_spots, col_num,row_num) {
-        variables = new_variables;
+  variables = new_variables;
+  power_timer = pthread_create(ㄷ)
 }
 
 void ObjectManager::set_map(Map new_map) {

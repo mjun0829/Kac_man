@@ -10,6 +10,7 @@
 #include <random>
 #include <cstdlib>
 #include <functional>
+#include <pthread.h>
 
 namespace kac_man
 {
@@ -120,20 +121,22 @@ life : 3
   private:
     bool is_weak;
 
-    // 알고리즘을 가르키는 포인터
+  // 알고리즘을 가르키는 포인터
     std::function<void(ObjectManager&)> algo_ptr;
   public:
-    Ghost();
-
+    Ghost(int pos_x, int pos_y, int dir_x, int dir_y);
     bool get_status(void) const { return is_weak; }
     void set_status(bool new_status) { is_weak = new_status; }
+    void set_algo_ptr(std::function<void(ObjectManager&)> new_algorithm) {
+      algo_ptr = new_algorithm;
+    }
+    void execute_algorithm(ObjectManager OM);
   };
 
   /*
   다음은 kac_man에 관한 클래스이다.
   strong여부, life수를 변수로 가지고있다.
-
-*/
+  */
   class KacMan : public MovingObject
   {
   private:
@@ -141,7 +144,7 @@ life : 3
     int life;
 
   public:
-    KacMan();
+  //KacMan 의 초기 dir_x, dir_y는 UNDIRECT
     KacMan(int new_x, int new_y, int new_life);
 
     int new_life(void) const { return life; }
@@ -157,7 +160,7 @@ life : 3
   /*
   다음은 맵의 필드 위에 있는 점에 대한 클래스이다.
   Object를 상속받고 있고, PowDot, KacDot를 상속하고 있다.
-*/
+  */
   class Dot : public Object
   {
   private:
@@ -175,7 +178,7 @@ life : 3
   다음은 pow_dot에 관한 클래스이다.
   pow_dot와 kac_man이 닿았을 때,
   ObjectManager클래스의 man-pdot_crush() 호출
-*/
+  */
   class PowDot : public Dot
   {
   public:
@@ -265,6 +268,12 @@ kac_man을 가지고 있다.
   private:
     Variables variables;
 
+    // power 지속시간 5초를 재는 타이머이다.
+    pthread_t power_timer;
+
+    // ghost들이 모두 랜덤알고리즘을 가지고 움직이는 시간 10초를 재는 타이머이다.
+    pthread_t rand_timer;
+
   public:
     // ObjectManger의 초기생성자로서, 모든 object를 map정보, variable정보를 토대로
     // 생성한다.
@@ -279,6 +288,13 @@ kac_man을 가지고 있다.
   // 유저가 맵을 선택하면 다음 함수를 호출해서 private변수를 바꿔놓아야한다.
     void set_map(Map new_map);
     void set_variables(Variables new_variables) { variables = new_variables; }
+
+    // thread가 쓸 함수이다.
+    // parameter로 초를 넣으면 그 시간 만큼 시간을 잰다.
+    void timer(int seconds);
+
+    //rand_timer를 활성화시킨다.
+    void activate_rand_timer(void);
 
     /*
     다음은 상호작용에 관한 함수들이다.
@@ -329,9 +345,9 @@ kac_man을 가지고 있다.
     // kac_man의 is_strong = true로 만든다.
     void make_all_ghost_weak(void);
 
-    // 다음은 5초를 제는 쓰레드이다.
+    // 다음은 5초를 제는 쓰레드를 활성화시킨다.
     // man_pdot_crush에서 호출할 함수이다.
-    void thread_timer();
+    void activate_power_timer(void);
 
     // 다음은 thread_timer로부터 시그널을 받으면 호출할 함수이다.
     // 모든 고스트의 weak = false로 만든다.
